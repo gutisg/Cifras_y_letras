@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Cifras y Letras · La prueba de los números</title>
+<link rel="stylesheet" href="style.css" />
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#0b1e33" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Prueba de Cifras" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Cifras y Letras <span>· La prueba de los números</span></h1>
+    <p class="subtitle">
+      Consigue, con seis números y las operaciones básicas (+, −, ×, ÷), el número
+      objetivo de tres cifras. Dispones de 45 segundos.
+    </p>
+  </header>
+
+  <main id="app">
+
+    <!-- SETUP SCREEN -->
+    <section id="setup-screen" class="screen">
+      <div class="panel">
+        <h2>Configuración</h2>
+        <div class="field">
+          <label for="player-count">Jugadores</label>
+          <select id="player-count">
+            <option value="1">1 jugador (práctica)</option>
+            <option value="2" selected>2 jugadores</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="difficulty-mode">Objetivo</label>
+          <select id="difficulty-mode">
+            <option value="practice" selected>Práctica (objetivo siempre alcanzable)</option>
+            <option value="authentic">Auténtico (al azar, como en el programa; puede no ser exacto)</option>
+          </select>
+        </div>
+        <button id="start-setup-btn" class="primary">Empezar</button>
+      </div>
+    </section>
+
+    <!-- NUMBER PICKING SCREEN -->
+    <section id="pick-screen" class="screen hidden">
+      <div class="panel">
+        <h2 id="pick-title">Elige tus 6 números</h2>
+        <p class="hint">
+          Pide "grande" (25, 50, 75, 100 — máximo 4) o "pequeña" (1 a 10, dos de
+          cada — máximo 6 quedan disponibles hasta usar las 20) hasta completar
+          seis números.
+        </p>
+        <div class="pool-status">
+          <span id="large-pool-status">Grandes restantes: 4</span>
+          <span id="small-pool-status">Pequeñas restantes: 20</span>
+        </div>
+        <div class="pick-buttons">
+          <button id="pick-large-btn" class="secondary">Número grande</button>
+          <button id="pick-small-btn" class="secondary">Número pequeño</button>
+          <button id="pick-random-btn" class="secondary">Rellenar al azar</button>
+        </div>
+        <div id="picked-tiles" class="tiles"></div>
+        <button id="confirm-numbers-btn" class="primary" disabled>
+          Generar objetivo y empezar
+        </button>
+      </div>
+    </section>
+
+    <!-- GAME SCREEN -->
+    <section id="game-screen" class="screen hidden">
+      <div class="game-top">
+        <div class="target-box">
+          <span class="label">Objetivo</span>
+          <span id="target-value" class="target-number">—</span>
+          <span id="mode-badge" class="mode-badge hidden"></span>
+        </div>
+        <div class="timer-box">
+          <span class="label">Tiempo</span>
+          <div class="timer-bar-track">
+            <div id="timer-bar" class="timer-bar-fill"></div>
+          </div>
+          <span id="timer-value" class="timer-number">45</span>
+          <label class="pause-toggle">
+            <input type="checkbox" id="pause-checkbox" />
+            Pausar
+          </label>
+          <span id="elapsed-value" class="elapsed-value hidden"></span>
+        </div>
+        <div class="turn-box">
+          <span class="label">Turno</span>
+          <span id="current-player" class="turn-name">Jugador 1</span>
+        </div>
+      </div>
+
+      <div id="board-tiles" class="tiles board-tiles"></div>
+
+      <div class="operator-row">
+        <button class="op-btn" data-op="+">+</button>
+        <button class="op-btn" data-op="-">−</button>
+        <button class="op-btn" data-op="*">×</button>
+        <button class="op-btn" data-op="/">÷</button>
+      </div>
+
+      <div class="pending-op" id="pending-op-display"></div>
+
+      <div class="game-actions">
+        <button id="undo-btn" class="secondary">Deshacer</button>
+        <button id="hint-btn" class="secondary">Pista</button>
+      </div>
+      <div class="game-actions">
+        <button id="show-solution-ingame-btn" class="secondary">Ver solución</button>
+        <button id="finish-turn-btn" class="primary">¡Lo tengo! / Terminar turno</button>
+      </div>
+      <div id="ingame-solution-box" class="hidden"></div>
+    </section>
+
+    <!-- ROUND RESULT SCREEN -->
+    <section id="result-screen" class="screen hidden">
+      <div class="panel">
+        <h2>Resultado de la ronda</h2>
+        <div id="round-summary"></div>
+        <button id="show-solution-btn" class="secondary">Ver solución óptima</button>
+        <div id="solution-box" class="hidden"></div>
+        <h3>Puntuación total</h3>
+        <div id="total-scores"></div>
+        <div class="game-actions">
+          <button id="replay-round-btn" class="secondary">A jugar otra vez</button>
+          <button id="next-round-btn" class="primary">Siguiente ronda</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>
+      Juego inspirado en la prueba de cifras de <em>Cifras y Letras</em> (adaptación
+      española de <em>Des chiffres et des lettres</em>). No oficial.
+    </p>
+  </footer>
+
+  <script src="solver.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
